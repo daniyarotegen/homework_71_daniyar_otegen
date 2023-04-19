@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'instaclone',
     'bootstrap5',
+    'rest_framework',
+    'api',
 ]
 
 MIDDLEWARE = [
