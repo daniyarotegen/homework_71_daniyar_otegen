@@ -60,7 +60,6 @@ class HomeView(LoginRequiredMixin, ListView):
         ).order_by('-created_at')
 
 
-
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'profile.html'
 
@@ -133,14 +132,10 @@ class LikePostView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post, pk=self.kwargs['pk'])
         like, created = Like.objects.get_or_create(user=request.user, post=post)
-
         if not created:
             like.delete()
             post.likes_count -= 1
-        else:
-            post.likes_count += 1
-        post.save()
-
+            post.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 

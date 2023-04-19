@@ -52,6 +52,13 @@ class Like(models.Model):
     def __str__(self):
         return f'{self.user.username} likes {self.post}'
 
+    def save(self, *args, **kwargs):
+        is_new = not self.pk
+        super().save(*args, **kwargs)
+        if is_new:
+            self.post.likes_count += 1
+            self.post.save()
+
 
 class Comment(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
