@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <div class="mx-auto" style="width: 200px; height: 200px; border-radius: 50%; overflow: hidden;">
+                <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}'s avatar" class="w-100 h-100">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>{{ profile_user.username }}</h1>
+                {% if not is_own_profile %}
+                <form method="post"
+                      action="{% if is_following %}{% url 'unfollow_user' pk=profile_user.pk %}{% else %}{% url 'follow_user' pk=profile_user.pk %}{% endif %}">
+                    {% csrf_token %}
+                    <button class="btn {% if is_following %}btn-outline-secondary{% else %}btn-primary{% endif %}"
+                            type="submit">{% if is_following %}Unfollow{% else %}Follow{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="mt-3">
+                <p style="color: black; font-weight: bold;"><a
+                        href="{% url 'profile' user_id=profile_user.id %}?show_posts" class="text-decoration-none"
+                        style="color: black; font-weight: bold;">{{ posts_count }} posts</a> • <a
+                        href="{% url 'followers_list' user_id=profile_user.id %}" class="text-decoration-none"
+                        style="color: black; font-weight: bold;">{{ followers_count }} followers</a> •
+                    <a href="{% url 'following_list' user_id=profile_user.id %}" class="text-decoration-none"
+                       style="color: black; font-weight: bold;">{{ following_count }} following</a></p>
+            </div>
+            <div>
+                {{ profile_user.user_info }}
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        {% if posts %}
+        <h2>User Posts:</h2>
+        <div class="row">
+            {% for post in posts %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% include "post_card.html" %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <h2>No posts found for this user.</h2>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
